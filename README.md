@@ -1,3 +1,4 @@
+```python
 osint_framework/
 │
 ├── target_report.md          # Output file [cite: 17]
@@ -16,5 +17,4 @@ osint_framework/
 │
 └── reporting/                # Phase III: Reporting Engine [cite: 16]
     └── generator.py          # Handles Markdown/PDF rendering
-
-
+```
