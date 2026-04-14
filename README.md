@@ -1,20 +1,20 @@
 ```python
 osint_framework/
 │
-├── target_report.md          # Output file [cite: 17]
-├── main.py                   # Entry point: Orchestrates the pipeline
+├── target_report.md          
+├── main.py                   
 │
 ├── core/
-│   ├── engine.py             # Manages the execution flow (dispatching adapters)
-│   ├── models.py             # Unified data schemas (e.g., Pydantic models)
-│   └── analyzer.py           # Phase II: Entity resolution and risk scoring [cite: 11, 15]
+│   ├── engine.py           
+│   ├── models.py             
+│   └── analyzer.py           
 │
-├── adapters/                 # Phase I: Data Acquisition [cite: 6]
-│   ├── base.py               # Abstract Base Class defining the Adapter interface
-│   ├── github_adapter.py     # Concrete implementation for GitHub
-│   ├── google_search_adapter.py       # Concrete implementation for News
-│   └── opencorporates_adapter.py      # Concrete implementcation for company
+├── adapters/                
+│   ├── base.py               
+│   ├── github_adapter.py    
+│   ├── google_search_adapter.py
+│   └── opencorporates_adapter.py      
 │
-└── reporting/                # Phase III: Reporting Engine [cite: 16]
-    └── generator.py          # Handles Markdown/PDF rendering
+└── reporting/                
+    └── generator.py          
 ```
