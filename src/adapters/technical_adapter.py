@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import whois
 from .base import BaseAdapter
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 class TechnicalInfrastructureAdapter(BaseAdapter):
     def __init__(self, github_token: str = None):
@@ -21,7 +21,7 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
                 async with session.get(url, timeout=10) as response:
                     if response.status == 200:
                         data = await response.json()
-                        for item in data.get("items", [])[:3]: # Top 3 to reduce noise
+                        for item in data.get("items", [])[:3]: 
                             results.append(self.normalize_record(
                                 raw_data={
                                     "type": "repository",
@@ -32,20 +32,24 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
                                 url=item["html_url"]
                             ))
         except Exception as e:
-            print(f"[GitHub Error] {str(e)}")
+            print(f"[{self.source_name}] GitHub Error: {str(e)}")
         return results
 
     async def _fetch_whois(self, domain: str) -> List[Dict[str, Any]]:
-        """Internal method to handle WHOIS lookups asynchronously"""
+        """
+        STRICT TARGETING: This will ONLY run if passed a verified domain containing a dot.
+        NO BRUTE FORCING. NO GUESSING.
+        """
         results = []
+        if not domain or "." not in domain or len(domain.split(".")) < 2:
+            print(f"[{self.source_name}] Skipping WHOIS: No verified domain provided. Will not brute-force.")
+            return results
+
         try:
-            # In a production system, Phase II analysis would map the name to a domain first.
-            target_domain = f"{domain.replace(' ', '').lower()}.com"
+            # Run the single, targeted lookup on the verified domain
+            domain_info = await asyncio.to_thread(whois.whois, domain)
             
-            # Run the synchronous WHOIS lookup in a separate thread so it doesn't block async I/O
-            domain_info = await asyncio.to_thread(whois.whois, target_domain)
-            
-            if domain_info.domain_name:
+            if getattr(domain_info, 'domain_name', None):
                 results.append(self.normalize_record(
                     raw_data={
                         "type": "domain_registration",
@@ -53,24 +57,24 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
                         "creation_date": str(domain_info.creation_date),
                         "name_servers": domain_info.name_servers
                     },
-                    confidence=0.9,
-                    url=f"https://whois.domaintools.com/{target_domain}"
+                    confidence=0.95,
+                    url=f"https://whois.domaintools.com/{domain}"
                 ))
         except Exception as e:
-            print(f"[WHOIS Error] {str(e)}")
+            print(f"[{self.source_name}] WHOIS Error on {domain}: {str(e)}")
+            
         return results
 
-    async def fetch(self, query: str) -> List[Dict[str, Any]]:
+    async def fetch(self, search_query: str, verified_domain: Optional[str] = None) -> List[Dict[str, Any]]:
         """
-        The main public method. Uses asyncio.gather to run GitHub and WHOIS lookups concurrently.
+        Takes the original query for GitHub, and the extracted domain for WHOIS.
         """
-        github_task = self._fetch_github(query)
-        whois_task = self._fetch_whois(query)
+        # GitHub searches by name, WHOIS strictly uses the verified domain
+        github_task = self._fetch_github(search_query)
+        whois_task = self._fetch_whois(verified_domain)
         
         results = await asyncio.gather(github_task, whois_task)
-        
-        flattened_results = [item for sublist in results for item in sublist]
-        return flattened_results
+        return [item for sublist in results for item in sublist]
 
 
 
@@ -78,3 +82,6 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
 
 # The Trade-off
 # Notice that the adapter only fetches and formats the data. It does not decide if the repository actually belongs to the target company. Filtering out false positives (Entity Resolution) is the job of Phase II. Keeping these responsibilities separate ensures that if the GitHub API changes tomorrow, your core analysis logic doesn't break.
+
+
+

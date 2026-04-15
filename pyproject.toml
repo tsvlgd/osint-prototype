@@ -1,0 +1,22 @@
+[project]
+name = "osint-framework"
+version = "0.1.0"
+description = "Prototype OSINT framework"
+authors = [
+    { name = "Mehfooj Alam" }
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "aiohttp",
+    "python-whois",
+    "pydantic",
+    "python-dotenv",
+    "duckduckgo-search>=8.1.1",
+]
+
+[tool.uv]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
