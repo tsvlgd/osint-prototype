@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
-from core.models import IntelligenceRecord
+from ..core.models import IntelligenceRecord
 
 
 class BaseAdapter(ABC):

@@ -1,5 +1,5 @@
 import logging
-from src.core.models import TargetInvestigation
+from .models import TargetInvestigation
 
 logger = logging.getLogger("OSINT_Analyzer")
 

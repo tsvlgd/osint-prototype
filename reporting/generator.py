@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from core.models import TargetInvestigation
+from src.core.models import TargetInvestigation
 
 try:
     from reportlab.lib.pagesizes import letter
