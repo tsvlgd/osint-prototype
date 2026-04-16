@@ -27,7 +27,7 @@ The pipeline concludes by serializing the nested Pydantic models into a clean Ma
 ---
 
 ## 3. Architecture Diagram
-![alt text](image.png)
+![flow architecture](arch.png)
 
 ---
 
@@ -116,6 +116,9 @@ To execute the pipeline, simply run the orchestrator:
 python main.py
 ```
 Upon successful execution, the Reporting Engine will automatically generate a timestamped Markdown report inside the `reports/` directory.
+
+### Example Markdown Report
+View a sample generated report: [AIGeeks OSINT Report](https://github.com/tsvlgd/osint-prototype/blob/main/reports/travis_haasch%E2%80%9D_ceo_of_aigeeks_osint_report_20260416_153815.md)
 
 ---
 
