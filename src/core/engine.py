@@ -24,19 +24,60 @@ class OSINTEngine:
         self.analyzer = OSINTAnalyzer()
 
     def _extract_domain(self, records: List[IntelligenceRecord]) -> str:
-        """Extract official domain from social footprints."""
+        """Parses records to extract a valid target domain, filtering out major platforms and requiring recognized TLDs."""
         domain_pattern = re.compile(r"\b([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b")
 
-        for r in records:
-            snippet = r.raw_data.get("snippet", "").lower()
-            matches = domain_pattern.findall(snippet)
+        excluded_platforms = {
+            "linkedin.com",
+            "twitter.com",
+            "t.co",
+            "google.com",
+            "github.com",
+            "medium.com",
+            "facebook.com",
+            "instagram.com",
+            "zoominfo.com",
+            "reddit.com",
+        }
 
+        valid_tlds = (
+            ".com",
+            ".net",
+            ".org",
+            ".co",
+            ".ai",
+            ".io",
+            ".xyz",
+            ".shop",
+            ".store",
+            ".app",
+            ".dev",
+            ".info",
+            ".online",
+            ".site",
+            ".tech",
+            ".blog",
+            ".us",
+            ".co.uk",
+            ".de",
+            ".in",
+            ".ca",
+            ".com.br",
+            ".ae",
+            ".me",
+        )
+
+        for r in records:
+            matches = domain_pattern.findall(r.raw_data.get("snippet", "").lower())
             for match in matches:
-                if not any(
-                    x in match
-                    for x in ["linkedin.com", "twitter.com", "t.co", "google"]
-                ):
-                    return match.replace("www.", "")
+                clean_match = match.replace("www.", "")
+
+                if any(clean_match.endswith(tld) for tld in valid_tlds):
+                    if not any(
+                        platform in clean_match for platform in excluded_platforms
+                    ):
+                        return clean_match
+
         return ""
 
     async def run_investigation(self, query: str) -> TargetInvestigation:
