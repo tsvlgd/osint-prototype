@@ -8,11 +8,13 @@ from adapters.technical_adapter import TechnicalInfrastructureAdapter
 from adapters.opencorporates_adapter import OpenCorporatesAdapter
 from core.engine import OSINTEngine
 
+from reporting.generator import ReportGenerator
+
 load_dotenv()
 
 
 async def main():
-    target_query = "Savvythelegend"
+    target_query = "Travis Haasch” CEO of AIGeeks"
 
     print("=" * 50)
     print(f"Initializing OSINT Framework for target: {target_query}")
@@ -37,11 +39,14 @@ async def main():
     print(f"TOTAL VERIFIED RECORDS: {len(investigation.records)}")
     print("=" * 50 + "\n")
 
-    for record in investigation.records:
-        print(f"[Score: {record.confidence:.2f}] Source: {record.source_name}")
-        print(f"   URL: {record.source_url}")
-        print(f"   DATA: {json.dumps(record.raw_data, indent=2)}")
-        print("-" * 60)
+
+    if len(investigation.records) > 0:
+        print("\nGenerating Phase III Markdown Report...")
+        report_engine = ReportGenerator()
+        report_path = report_engine.generate(investigation)
+        print(f"[*] Report successfully generated at: {report_path}\n")
+    else:
+        print("\n[!] No verified records found. Skipping report generation.\n")
 
 
 if __name__ == "__main__":
