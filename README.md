@@ -42,7 +42,27 @@ This framework was engineered to hit the **Exceptional** tier across all core as
 
 ---
 
-## 5. The Roadmap to Production (Future Updates)
+## 5. Web Interface: Streamlit Dashboard
+The framework now includes a **production-ready Streamlit web application** for easy interaction without CLI knowledge.
+
+### Running the Web App
+```bash
+streamlit run app.py
+```
+The application will open in your default browser at `http://localhost:8501`
+
+### Features
+- **Intuitive UI:** Enter a target entity and click "Run Investigation"
+- **Real-time Progress:** Visual progress bar during investigation
+- **Dual-Format Reporting:** Download reports in both Markdown and PDF formats
+- **Report Preview:** View investigation results directly in the app with full Markdown rendering
+- **Session Persistence:** Results remain available even while downloading (no data loss)
+- **Clear Results Button:** Explicitly reset investigation data to run new queries
+- **Professional PDF Export:** ReportLab-generated PDFs with styled tables matching Markdown structure
+
+---
+
+## 6. The Roadmap to Production (Future Updates)
 While this iteration is a robust CLI prototype, scaling OSINT workflows requires transitioning from a local script to a resilient, asynchronous backend.
 
 If given additional time to push this to production, the architecture would evolve as follows:
@@ -53,10 +73,12 @@ If given additional time to push this to production, the architecture would evol
 
 ---
 
-## 6. Project Structure
+## 7. Project Structure
 ```
 osint_framework/
-├── main.py
+├── main.py                          # CLI entry point
+├── app.py                           # Streamlit web interface
+├── engine_wrapper.py                # Async wrapper for web app
 ├── pyproject.toml
 ├── .gitignore
 ├── README.md
@@ -74,13 +96,15 @@ osint_framework/
 │   │   └── opencorporates_adapter.py
 │   └── reporting/
 │       ├── __init__.py
-│       └── generator.py
+│       └── generator.py             # Now supports Markdown + PDF export
 └── reports/
+    ├── *.md                         # Markdown reports
+    └── *.pdf                        # PDF reports
 ```
 
 ---
 
-## 7. Quickstart & Installation
+## 8. Quickstart & Installation
 
 ### Prerequisites
 This project uses `uv` for lightning-fast dependency management and virtual environments. Python 3.10+ is required.
@@ -98,7 +122,7 @@ This project uses `uv` for lightning-fast dependency management and virtual envi
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    uv pip install -r requirements.txt
    ```
-   *(Note: Core dependencies include `aiohttp`, `pydantic`, `python-dotenv`, and `python-whois`)*
+   *(Note: Core dependencies include `aiohttp`, `pydantic`, `python-dotenv`, `python-whois`, `streamlit`, and `reportlab`)*
 
 3. **Configure Environment Variables:**
    Create a `.env` file in the root directory and add your API keys:
@@ -111,26 +135,42 @@ This project uses `uv` for lightning-fast dependency management and virtual envi
    ```
 
 ### Running an Investigation
-To execute the pipeline, simply run the orchestrator:
+
+#### Option 1: CLI (Command Line)
 ```bash
 python main.py
 ```
-Upon successful execution, the Reporting Engine will automatically generate a timestamped Markdown report inside the `reports/` directory.
+Upon successful execution, a timestamped Markdown report will be generated in `reports/`
 
-### Example Markdown Report
-View a sample generated report: [AIGeeks OSINT Report](https://github.com/tsvlgd/osint-prototype/blob/main/reports/travis_haasch%E2%80%9D_ceo_of_aigeeks_osint_report_20260416_153815.md)
+#### Option 2: Web App (Recommended for UI)
+```bash
+streamlit run app.py
+```
+Opens an interactive dashboard at `http://localhost:8501` with:
+- Real-time investigation progress
+- Dual-format reporting (Markdown + PDF download)
+- Built-in report preview
+- Session persistence across downloads
+
+### Example Reports
+View sample generated reports:
+- **Markdown:** [AIGeeks OSINT Report](https://github.com/tsvlgd/osint-prototype/blob/main/reports/)
+- **PDF:** Available for download in web app after investigation
 
 ---
 
-## 8. Key Features
+## 9. Key Features
 - **Modular Adapter Pattern:** Easy to extend with new data sources
 - **Entity Resolution & De-duplication:** Confidence scoring and false positive filtering
 - **Risk Scoring:** Automated keyword-based risk assessment
 - **Audit Trail:** Full traceability with timestamps and source URLs
-- **Production-Ready Output:** Professional Markdown reports with structured tables
+- **Dual-Format Reporting:** Export findings as professional Markdown or styled PDF documents
+- **Web Interface:** Streamlit dashboard for intuitive, no-code investigation workflows
+- **Session Persistence:** Investigation results survive across downloads and app interactions
+- **Production-Ready Output:** Structured reports with audit trails and confidence metrics
 - **OPSEC-Conscious:** Minimal API footprint, no brute-forcing, verified domain-only targeting
 
 ---
 
-## 9. License & Attribution
+## 10. License & Attribution
 This project is provided as-is for educational and authorized security research purposes only. Ensure all OSINT activities comply with applicable laws and ethical guidelines.
