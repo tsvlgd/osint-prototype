@@ -1,0 +1,1 @@
+"""Adapters for various OSINT data sources."""
