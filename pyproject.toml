@@ -13,6 +13,8 @@ dependencies = [
     "pydantic",
     "python-dotenv",
     "duckduckgo-search>=8.1.1",
+    "streamlit>=1.56.0",
+    "reportlab",
 ]
 
 [tool.uv]

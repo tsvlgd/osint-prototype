@@ -47,7 +47,10 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
             return results
 
         try:
-            domain_info = await asyncio.to_thread(whois.whois, domain)
+            domain_info = await asyncio.wait_for(
+                asyncio.to_thread(whois.whois, domain),
+                timeout=15.0
+            )
 
             if getattr(domain_info, "domain_name", None):
                 results.append(
@@ -62,6 +65,8 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
                         url=f"https://whois.domaintools.com/{domain}",
                     )
                 )
+        except asyncio.TimeoutError:
+            print(f"[{self.source_name}] WHOIS Timeout on {domain} (exceeded 15s)")
         except Exception as e:
             print(f"[{self.source_name}] WHOIS Error on {domain}: {str(e)}")
 
