@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import sys
 import whois
 from .base import BaseAdapter
 from typing import List, Dict, Any, Optional
@@ -37,7 +38,7 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
                                 )
                             )
         except Exception as e:
-            print(f"[{self.source_name}] GitHub Error: {str(e)}")
+            print(f"[{self.source_name}] GitHub Error: {str(e)}", file=sys.stderr)
         return results
 
     async def _fetch_whois(self, domain: str) -> List[Dict[str, Any]]:
@@ -66,9 +67,9 @@ class TechnicalInfrastructureAdapter(BaseAdapter):
                     )
                 )
         except asyncio.TimeoutError:
-            print(f"[{self.source_name}] WHOIS Timeout on {domain} (exceeded 15s)")
+            print(f"[{self.source_name}] WHOIS Timeout on {domain} (exceeded 15s)", file=sys.stderr)
         except Exception as e:
-            print(f"[{self.source_name}] WHOIS Error on {domain}: {str(e)}")
+            print(f"[{self.source_name}] WHOIS Error on {domain}: {str(e)}", file=sys.stderr)
 
         return results
 

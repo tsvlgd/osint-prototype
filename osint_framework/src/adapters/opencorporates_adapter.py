@@ -1,6 +1,7 @@
 import aiohttp
 import asyncio
 import os
+import sys
 from .base import BaseAdapter
 from typing import List, Dict, Any
 
@@ -18,7 +19,7 @@ class OpenCorporatesAdapter(BaseAdapter):
         """Fetch corporate registry data from OpenCorporates."""
         results = []
         if not self.api_key:
-            print(f"[{self.source_name}] Error: SERPER_API_KEY missing in .env")
+            print(f"[{self.source_name}] Error: SERPER_API_KEY missing in .env", file=sys.stderr)
             return results
 
         dork_query = f'site:opencorporates.com "{query}"'
@@ -36,7 +37,7 @@ class OpenCorporatesAdapter(BaseAdapter):
                     self.base_url, headers=headers, json=payload, timeout=10
                 ) as response:
                     if response.status != 200:
-                        print(f"[{self.source_name}] API Error: {response.status}")
+                        print(f"[{self.source_name}] API Error: {response.status}", file=sys.stderr)
                         return results
 
                     data = await response.json()
@@ -58,8 +59,8 @@ class OpenCorporatesAdapter(BaseAdapter):
                         results.append(normalized)
 
         except asyncio.TimeoutError:
-            print(f"[{self.source_name}] Request timed out.")
+            print(f"[{self.source_name}] Request timed out.", file=sys.stderr)
         except Exception as e:
-            print(f"[{self.source_name}] Error: {str(e)}")
+            print(f"[{self.source_name}] Error: {str(e)}", file=sys.stderr)
 
         return results

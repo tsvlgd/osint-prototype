@@ -1,5 +1,6 @@
 import asyncio
 import re
+import sys
 import logging
 from typing import List
 from .models import TargetInvestigation, IntelligenceRecord
@@ -8,11 +9,11 @@ from .analyzer import OSINTAnalyzer
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler()],
+    handlers=[logging.StreamHandler(sys.stderr)],
 )
 logger = logging.getLogger("OSINT_Engine")
 
-
+    
 class OSINTEngine:
     """Orchestrates the multi-phase OSINT investigation pipeline."""
 

@@ -131,3 +131,4 @@ dmypy.json
 
 # uv
 uv.lock
+test_spawn.ts
