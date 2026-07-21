@@ -2,8 +2,8 @@ import streamlit as st
 import asyncio
 import os
 from dotenv import load_dotenv
-from engine_wrapper import run_osint_investigation
-from reporting.generator import ReportGenerator
+from osint_framework.engine_wrapper import run_osint_investigation
+from osint_framework.reporting.generator import ReportGenerator
 
 load_dotenv()
 
