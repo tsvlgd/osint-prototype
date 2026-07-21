@@ -6,6 +6,7 @@ from osint_framework.src.adapters.google_search_adapter import GoogleSearchAdapt
 from osint_framework.src.adapters.technical_adapter import TechnicalInfrastructureAdapter
 from osint_framework.src.adapters.opencorporates_adapter import OpenCorporatesAdapter
 from osint_framework.src.core.engine import OSINTEngine
+from osint_framework.reporting.generator import ReportGenerator
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,8 +32,8 @@ async def run_osint_investigation(target_query: str) -> tuple:
     investigation = await engine.run_investigation(target_query)
 
     if len(investigation.records) > 0:
-        # report_engine = ReportGenerator()
-        # report_path = report_engine.generate(investigation)
-        return investigation
+        report_engine = ReportGenerator()
+        report_path = report_engine.generate(investigation)
+        return investigation, report_path
     else:
         return None
