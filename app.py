@@ -47,7 +47,7 @@ if scan_button:
         progress_bar = st.progress(0)
 
         with st.spinner(f"Executing Search-First Discovery for '{target}'..."):
-            report_path, investigation = asyncio.run(run_osint_investigation(target))
+            investigation, report_path = asyncio.run(run_osint_investigation(target))
             st.session_state.report_path = report_path
             st.session_state.investigation_obj = investigation
             st.session_state.investigation_json = investigation.model_dump_json()
